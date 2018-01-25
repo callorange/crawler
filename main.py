@@ -1,6 +1,6 @@
 from utils import *
 
-song_list = get_top100_list(refresh=True)
+song_list = get_top100_list(top=500, refresh=True)
 
 # 출력
 for song_info in song_list:

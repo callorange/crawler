@@ -8,14 +8,15 @@ __all__ = [
 ]
 
 
-def get_top100_list(refresh=False):
+def get_top100_list(top=100, refresh=False):
     """멜론 차트 100위까지 리스트 반환
 
     Args:
+        top (int): 뽑아올 순위. 기본 100. 1~100
         refresh (bool): 멜론 차트를 새로 저장 함. 기본 False
 
     Returns:
-        list: 멜론 차트 리스트.
+        list: 멜론 차트 정보 리스트. 각 아이템은 딕셔너리
 
     Example:
         >>> get_top100_list()
@@ -25,8 +26,14 @@ def get_top100_list(refresh=False):
             'ARTIST': song_artist,
             'ALBUM': song_album,
             'IMG': song_img
-        }]
+        }...]
     """
+
+    # top 변수 체크
+    if top < 1:
+        top = 1
+    elif top > 100:
+        top = 100
 
     # 경로 설정
     root_dir = os.path.dirname(os.path.abspath(__name__))
@@ -52,7 +59,7 @@ def get_top100_list(refresh=False):
 
     # 리스트 만들기
     song_list = []
-    for tr in soup.find_all('tr', class_=['lst50', 'lst100']):
+    for tr in soup.find_all('tr', class_=['lst50', 'lst100'], limit=top):
         song_rank = tr.find('span', class_='rank').text
         song_title = tr.find('div', class_='rank01').find('a').text
         song_artist = tr.find('div', class_='rank02').find('a').text
