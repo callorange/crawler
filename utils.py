@@ -8,9 +8,24 @@ __all__ = [
 ]
 
 
-def get_top100_list():
+def get_top100_list(refresh=False):
     """멜론 차트 100위까지 리스트 반환
-    :return:
+
+    Args:
+        refresh (bool): 멜론 차트를 새로 저장 함. 기본 False
+
+    Returns:
+        list: 멜론 차트 리스트.
+
+    Example:
+        >>> get_top100_list()
+        [{
+            'RANK': song_rank,
+            'TITLE': song_title,
+            'ARTIST': song_artist,
+            'ALBUM': song_album,
+            'IMG': song_img
+        }]
     """
 
     # 경로 설정
@@ -23,8 +38,8 @@ def get_top100_list():
     #     os.mkdir(path_data)
     os.makedirs(path_data, mode=0o777, exist_ok=True)
 
-    # 파일 저장 - 파일이 있으면 스킵
-    if os.path.exists(path_file) is False:
+    # 파일 저장 - 파일이 없거나 refresh가 True 일때
+    if os.path.exists(path_file) is False or refresh:
         response = requests.get('https://www.melon.com/chart/index.htm')
         with open(path_file, 'wt', encoding='utf-8') as f:
             f.write(response.text)
