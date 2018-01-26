@@ -5,8 +5,7 @@ import requests
 
 __all__ = [
     'get_top100_list',
-    'get_song_detail',
-    'get_song_search'
+    'get_song_detail'
 ]
 
 PATH_MODULE = os.path.abspath(os.path.abspath(__file__))
@@ -169,50 +168,3 @@ def get_song_detail(song_id, refresh=False):
     return song_detail
 
 
-def get_song_search(search_string='', start=1, search_option=''):
-
-    # search_string 체크
-    if type(search_string) is not str or search_string == '':
-        print('id is not string or empty')
-        return {}
-
-    # 검색 결과 받기
-    # http://www.melon.com/search/song/index.htm?q=up&section=&searchGnbYn=Y&kkoSpl=N&kkoDpType=&ipath=srch_form
-    melon_url = 'http://www.melon.com/search/song/index.htm'
-    melon_param = {'q': search_string}
-    melon_headers = {'user-agent': 'my-app/0.0.1'}
-    response = requests.get(melon_url, params=melon_param, headers=melon_headers)
-    if len(response.text) < 10:
-        print('서버의 응답내용이 잘못되었습니다.')
-        return None
-
-
-    # 파싱
-    soup = BeautifulSoup(response.text, 'lxml')
-
-    songs = soup.find('form', id='frm_defaultList').tbody.find_all('tr')
-
-    info_list = []
-    for song in songs:
-        song_info = song.find_all('td')
-
-        song_rank = song_info[1].text.strip()
-        song_title = song_info[2].find('a', class_='fc_gray').text.strip()
-        song_artists = song_info[3].find('div', id='artistName').find_all(['a'], recursive=False)
-        song_artist = []
-        for artist in song_artists:
-            if artist:
-                song_artist.append(artist.text.strip())
-        if len(artist) == 0:
-            song_artist.append('Various Artist')
-        song_album = song_info[4].text.strip()
-
-        info_dict = {
-            'Rank': song_rank,
-            'Title': song_title,
-            'Artist': song_artist,
-            'Album': song_album
-        }
-        info_list.append(info_dict)
-
-    return info_list
