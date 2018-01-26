@@ -37,7 +37,7 @@ def get_top100_list(top=100, refresh=False):
         top = 100
 
     # 경로 설정
-    root_dir = os.path.dirname(os.path.abspath(__name__))
+    root_dir = os.path.dirname(os.path.abspath(__file__))
     path_data = os.path.join(root_dir, 'data')
     path_file = os.path.join(path_data, 'melon.html')
 
@@ -99,7 +99,7 @@ def get_song_detail(song_id,refresh=False):
     """
 
     # 경로 설정
-    root_dir = os.path.dirname(os.path.abspath(__name__))
+    root_dir = os.path.dirname(os.path.abspath(__file__))
     path_data = os.path.join(root_dir, 'data')
     path_file = os.path.join(path_data, f'{song_id}.html')
 
