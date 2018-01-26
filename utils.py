@@ -87,7 +87,7 @@ def get_song_detail(song_id,refresh=False):
     """멜론에서 곡 상세정보를 가져온다
 
     Args:
-        song_id (string): 노래 ID
+        song_id_list (str): 노래 ID
         refresh (bool): 노래 정보를 새로 가져 옴. 기본 False
 
     Returns:
@@ -97,6 +97,10 @@ def get_song_detail(song_id,refresh=False):
         >>> get_song_detail('333333')
         {...}
     """
+    # song_id 체크
+    if type(song_id) is not str:
+        print('id is not string')
+        return {}
 
     # 경로 설정
     root_dir = os.path.dirname(os.path.abspath(__file__))
