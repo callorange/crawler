@@ -1,7 +1,6 @@
 from utils import Melon
 
 if __name__ == '__main__':
-
     # q = input('Search Song:')
     # songs = Melon.MelonCrawler().get_song_search(q)
 
@@ -17,5 +16,5 @@ if __name__ == '__main__':
         print(a.awards)
         print(a.intro)
         for song in a.songs:
-            print(song, song.genre)
+            print(f'Song: {song}, Artist:{song.artist}')
         break;

@@ -1,7 +1,9 @@
 import os
 import requests
 import re
-from bs4 import BeautifulSoup, NavigableString
+from bs4 import BeautifulSoup
+from bs4 import NavigableString
+
 
 __all__ = [
     'Song',
@@ -16,7 +18,7 @@ _PATH_DATA = os.path.join(_ROOT_DIR, 'data')
 class Artist:
     """가수 정보 클래스"""
 
-    def __init__(self, artist_id='', name='', country='', sex='', act_type='', genre=[]):
+    def __init__(self, artist_id='', name='', country='', sex='', act_type='', genre=''):
         """가수 정보를 생성한다
 
         Args:
@@ -47,7 +49,7 @@ class Artist:
 
     def refresh(self):
         """아티스트 정보 업데이트"""
-        self.get_artist_detail(self.artist_id,True)
+        self.get_artist_detail(self.artist_id, True)
 
     def get_artist_detail(self, artist_id, refresh=False):
         """멜론에서 아티스트 상세정보를 가져온다
@@ -111,9 +113,9 @@ class Artist:
         info01 = info01.find_all('dd')
         a_awards = []
         if info01 and len(info01) > 0:
-            a_awards_list = [ award.get_text(strip=True).split('|') for award in info01 ]
+            a_awards_list = [award.get_text(strip=True).split('|') for award in info01]
             for a_awards_item in a_awards_list:
-                a_awards.append({'award_title':a_awards_item[0], 'award_content':a_awards_item[1]})
+                a_awards.append({'award_title': a_awards_item[0], 'award_content': a_awards_item[1]})
 
         info02 = soup.find('div', id='d_artist_intro')
         if info02:
@@ -130,7 +132,7 @@ class Artist:
             info03_dict[key.text.strip()] = value.text.strip()
 
         info04 = soup.find('div', class_='debutsong_info').a
-        debut_title_id = re.search( r"Detail\(\'(.*?)\'\)", info04["href"].strip() ).group(1)
+        debut_title_id = re.search(r"Detail\(\'(.*?)\'\)", info04["href"].strip()).group(1)
         debut_title_name = info04["title"].strip()
 
         info05 = soup.find('ul', class_='d_artist_list').find_all('a', class_='thumb')
@@ -147,21 +149,21 @@ class Artist:
             song_title = song_info[2].find('a', class_='fc_gray').text.strip()
             song_artists = song_info[3].find('div', id='artistName').find(class_='checkEllipsis')
             if len(song_artists.find_all('a')) > 1:
-                song_artists = [ artist.text for artist in song_artists.find_all('a')]
+                song_artists = ','.join([artist.text for artist in song_artists.find_all('a')])
             else:
-                song_artists = [song_artists.text]
+                song_artists = song_artists.text
             song_album = song_info[4].text.strip()
 
-            a_song_list.append( Song(song_id, song_title, song_artists, song_album) )
+            a_song_list.append(Song(song_id, song_title, str(song_artists), song_album))
 
         self.country = info06
         self.sex = info03_dict["유형"].split('|')[1].strip()
         self.act_type = info03_dict["유형"].split('|')[0].strip()
-        self.genre = [ g.strip() for g in info03_dict["장르"].split(',') ]
+        self.genre = [g.strip() for g in info03_dict["장르"].split(',')]
 
         self._member = [mem['title'].strip() for mem in info05]
         self._debut = info03_dict["데뷔"]
-        self._debut_title = Song(debut_title_id, debut_title_name, self.name, '' )
+        self._debut_title = Song(debut_title_id, debut_title_name, self.name, '')
         self._debut_title.refresh()
         self._agency = info03_dict["소속사명"]
         self._awards = a_awards
@@ -224,6 +226,7 @@ class Artist:
             self.get_artist_detail(self.artist_id)
             return self._songs
 
+
 class Song:
     """곡 정보 클래스"""
 
@@ -243,7 +246,7 @@ class Song:
 
     def refresh(self):
         """곡 정보 업데이트"""
-        self.get_song_detail(self.song_id,True)
+        self.get_song_detail(self.song_id, True)
 
     def get_song_detail(self, song_id, refresh=False):
         """멜론에서 곡 상세정보를 가져온다
@@ -298,7 +301,6 @@ class Song:
                  type(item) is NavigableString])
         else:
             s_lyrics = ''
-
 
         song_album_info = song_info_area.find('div', class_='meta').find('dl', class_='list')
         song_album_key = song_album_info.find_all('dt')
