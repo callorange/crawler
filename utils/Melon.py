@@ -6,6 +6,7 @@ __all__ = [
     'MelonCrawler'
 ]
 
+
 class MelonCrawler:
     """멜론에서 음악/가수 검색 결과를 크롤링 한다."""
 
@@ -54,7 +55,7 @@ class MelonCrawler:
         soup = BeautifulSoup(search_result, 'lxml')
 
         # 가수목록
-        artist_list = soup.find('div',id='pageList').find_all('li')
+        artist_list = soup.find('div', id='pageList').find_all('li')
 
         info_list = []
         for artist in artist_list:
@@ -76,7 +77,7 @@ class MelonCrawler:
             # print(f'{artist_gubun}') # ['대한민국', '여성', '그룹']
             # print(f'{artist_genre}')
             # print(f'{artist_title_song}')
-            info_list.append( Artist(artist_id, artist_name, artist_country, artist_sex, artist_act_type, artist_genre) )
+            info_list.append(Artist(artist_id, artist_name, artist_country, artist_sex, artist_act_type, artist_genre))
 
         return info_list
 
@@ -107,7 +108,6 @@ class MelonCrawler:
 
         return response.text
 
-
     def get_song_search(self, search_string=''):
         """노래 검색 결과를 파싱하여 Song 클래스의 리스트를 반환한다.
 
@@ -136,12 +136,11 @@ class MelonCrawler:
             song_title = song_info[2].find('a', class_='fc_gray').text.strip()
             song_artists = song_info[3].find('div', id='artistName').find(class_='checkEllipsisSongdefaultList')
             if len(song_artists.find_all('a')) > 1:
-                song_artists = [ artist.text for artist in song_artists.find_all('a')]
+                song_artists = [artist.text for artist in song_artists.find_all('a')]
             else:
                 song_artists = [song_artists.text]
             song_album = song_info[4].text.strip()
 
-            info_list.append( Song(song_id, song_title, song_artists, song_album) )
+            info_list.append(Song(song_id, song_title, song_artists, song_album))
 
         return info_list
-

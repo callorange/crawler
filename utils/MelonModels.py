@@ -18,7 +18,7 @@ _PATH_DATA = os.path.join(_ROOT_DIR, 'data')
 class Artist:
     """가수 정보 클래스"""
 
-    def __init__(self, artist_id='', name='', country='', sex='', act_type='', genre=''):
+    def __init__(self, artist_id='', name='', country='', sex='', act_type='', genre=None):
         """가수 정보를 생성한다
 
         Args:
